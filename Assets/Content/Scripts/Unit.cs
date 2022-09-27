@@ -1,9 +1,8 @@
-using System;
 using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
-    [SerializeField] private UnitData _data;
+    //[SerializeField] private UnitData _data;
     [SerializeField] private MeshRenderer _meshRenderer;
 
     private int _maxHealth;
@@ -11,16 +10,16 @@ public class Unit : MonoBehaviour
     private float _attackPower;
     private Color _color;
 
-    private void Awake()
-    {
-        _maxHealth = _data.MaxHealth;
-        _moveSpeed = _data.MoveSpeed;
-        _attackPower = _data.AttackPower;
-        _color = _data.Color;
-    }
-
     private void Start()
     {
         _meshRenderer.material.color = _color;
+    }
+
+    public void Setup(UnitData data)
+    {
+        _maxHealth = data.MaxHealth;
+        _moveSpeed = data.MoveSpeed;
+        _attackPower = data.AttackPower;
+        _color = data.Color;
     }
 }

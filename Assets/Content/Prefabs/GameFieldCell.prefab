@@ -175,4 +175,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _sideSize: 1
-  _spawnPoint: {fileID: 0}
+  _spawnPoint: {fileID: 1779917469629834291}
