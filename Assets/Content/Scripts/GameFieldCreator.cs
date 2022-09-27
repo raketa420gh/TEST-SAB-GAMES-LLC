@@ -30,5 +30,20 @@ public class GameFieldCreator : MonoBehaviour
             createPosition.x = 0;
             createPosition.z += cellSize;
         }
+        
+        SetupPathfinder();
+    }
+
+    private void SetupPathfinder()
+    {
+        var gridGraph = AstarPath.active.data.gridGraph;
+
+        var centerOfFieldPosition = new Vector3(_cellsQuantityByLength / 2  , -1, _cellsQuantityByWidth / 2);
+
+        gridGraph.center = centerOfFieldPosition;
+        gridGraph.width = _cellsQuantityByWidth;
+        gridGraph.depth = _cellsQuantityByLength;
+
+        AstarPath.active.Scan(gridGraph);
     }
 }
