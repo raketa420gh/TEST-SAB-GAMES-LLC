@@ -12,8 +12,7 @@ public class GameFieldCreator : MonoBehaviour
     [Button]
     public void CreateGameField()
     {
-        var gameFieldParent =
-            Instantiate(new GameObject("GameField"), Vector3.zero, Quaternion.identity);
+        var gameFieldParent = new GameObject("GameField");
 
         var cellSize = _cellPrefab.SideSize;
         var createPosition = new Vector3(0, -0.5f, 0);
@@ -22,7 +21,9 @@ public class GameFieldCreator : MonoBehaviour
         {
             for (int i = 0; i < _cellsQuantityByLength; i++)
             {
-                Instantiate(_cellPrefab, createPosition, Quaternion.identity, gameFieldParent.transform);
+                var createdCell = Instantiate(_cellPrefab, createPosition, Quaternion.identity);
+                createdCell.transform.SetParent(gameFieldParent.transform);
+                
                 createPosition.x += cellSize;
             }
             
