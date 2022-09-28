@@ -1,25 +1,36 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Health))]
+[RequireComponent(typeof(PathfindingMovable))]
+[RequireComponent(typeof(DamageDealer))]
+
 public class Unit : MonoBehaviour
 {
-    //[SerializeField] private UnitData _data;
-    [SerializeField] private MeshRenderer _meshRenderer;
+    private MeshRenderer _meshRenderer;
+    private Health _health;
+    private PathfindingMovable _movement;
+    private DamageDealer _damageDealer;
 
-    private int _maxHealth;
-    private float _moveSpeed;
-    private float _attackPower;
-    private Color _color;
-
-    private void Start()
+    private void Awake()
     {
-        _meshRenderer.material.color = _color;
+        _meshRenderer = GetComponentInChildren<MeshRenderer>();
+        _health = GetComponent<Health>();
+        _movement = GetComponent<PathfindingMovable>();
+        _damageDealer = GetComponent<DamageDealer>();
     }
 
     public void Setup(UnitData data)
     {
-        _maxHealth = data.MaxHealth;
-        _moveSpeed = data.MoveSpeed;
-        _attackPower = data.AttackPower;
-        _color = data.Color;
+        _health.Setup(data.MaxHealth);
+        _movement.Setup(data.MoveSpeed);
+        _damageDealer.Setup(data.AttackPower);
+        _meshRenderer.material.color = data.Color;
+        
+        InitializeBehaviour();
+    }
+
+    private void InitializeBehaviour()
+    {
+        
     }
 }

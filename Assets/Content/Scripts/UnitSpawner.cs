@@ -7,6 +7,7 @@ public class UnitSpawner : MonoBehaviour
     [SerializeField] private Unit _unitPrefab;
     [SerializeField] private List<UnitData> _unitDatas = new List<UnitData>();
     [SerializeField] private GameFieldCreator _gameFieldCreator;
+    [SerializeField] private int _spawnAmount;
 
     private void OnEnable()
     {
