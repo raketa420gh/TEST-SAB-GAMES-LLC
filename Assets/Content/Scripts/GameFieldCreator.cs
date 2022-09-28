@@ -1,25 +1,22 @@
 using System;
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class GameFieldCreator : MonoBehaviour
 {
     public event Action<List<GameFieldCell>> OnGameFieldCreated;
-
+    
+    [SerializeField] private Transform _gameFieldParent;
     [SerializeField] private GameFieldCell _cellPrefab;
     [SerializeField] [Min (1)] private int _cellsQuantityByLength;
     [SerializeField] [Min (1)] private int _cellsQuantityByWidth;
-
-    public int AllCellsCount => _cellsQuantityByLength * _cellsQuantityByWidth;
-
-    [Button]
+    
     public void CreateGameField()
     {
-        var gameFieldParent = new GameObject("GameField");
+        var gameFieldParent = _gameFieldParent;
         var createdCells = new List<GameFieldCell>();
-        var cellSize = _cellPrefab.SideSize;
         var createPosition = new Vector3(0, -0.5f, 0);
+        var cellSize = _cellPrefab.SideSize;
 
         for (int j = 0; j < _cellsQuantityByWidth; j++)
         {

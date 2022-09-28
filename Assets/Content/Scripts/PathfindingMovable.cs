@@ -6,11 +6,10 @@ using UnityEngine;
 
 public class PathfindingMovable : MonoBehaviour, IMovable
 {
-    private float _moveSpeed;
     private Seeker _seeker;
     private AIPath _aiPath;
 
-    public float MoveSpeed => _moveSpeed;
+    public float MoveSpeed =>_aiPath.maxSpeed;
 
     private void Awake()
     {
@@ -18,7 +17,7 @@ public class PathfindingMovable : MonoBehaviour, IMovable
         _seeker = GetComponent<Seeker>();
     }
 
-    public void Setup(float moveSpeed) => _moveSpeed = moveSpeed;
+    public void Setup(float moveSpeed) => _aiPath.maxSpeed = moveSpeed;
 
     public void MoveTo(Vector3 position) => _aiPath.Move(position);
 }

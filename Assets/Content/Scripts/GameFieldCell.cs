@@ -7,4 +7,11 @@ public class GameFieldCell : MonoBehaviour
 
     public float SideSize => _sideSize;
     public Vector3 SpawnPointPosition => _spawnPoint.position;
+    public bool IsOccupied { get; private set; }
+
+    public void Occupy()
+    {
+        if (!IsOccupied)
+            IsOccupied = true;
+    }
 }

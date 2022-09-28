@@ -10,6 +10,9 @@ public class Unit : MonoBehaviour
     private Health _health;
     private PathfindingMovable _movement;
     private DamageDealer _damageDealer;
+    private StateMachine _stateMachine;
+    private UnitAggroState _aggroState;
+    private UnitAttackState _attackState;
 
     private void Awake()
     {
@@ -31,6 +34,10 @@ public class Unit : MonoBehaviour
 
     private void InitializeBehaviour()
     {
+        _stateMachine = new StateMachine();
+        _aggroState = new UnitAggroState(this);
+        _attackState = new UnitAttackState(this);
         
+        _stateMachine.ChangeState(_aggroState);
     }
 }

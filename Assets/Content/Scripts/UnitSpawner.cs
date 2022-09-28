@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -6,17 +7,26 @@ public class UnitSpawner : MonoBehaviour
 {
     [SerializeField] private Unit _unitPrefab;
     [SerializeField] private List<UnitData> _unitDatas = new List<UnitData>();
-    [SerializeField] private GameFieldCreator _gameFieldCreator;
-    [SerializeField] private int _spawnAmount;
+    [SerializeField] [Min(2)] private int _spawnUnitsCount;
 
-    private void OnEnable()
+    public void SpawnUnitsToEmptyGameFieldCells(GameField gameField)
     {
-        _gameFieldCreator.OnGameFieldCreated += OnGameFieldCreated;
+        if (_spawnUnitsCount > gameField.EmptyCells.Capacity)
+            throw new ArgumentException("Units count more than empty cells count");
+        
+        var unitsParent = new GameObject("Units");
+        
+        for (int i = 0; i < _spawnUnitsCount; i++)
+        {
+            var randomEmptyCell = gameField.GetRandomEmptyCell();
+            SpawnRandomUnit(randomEmptyCell.SpawnPointPosition, unitsParent.transform);
+            gameField.OccupyCell(randomEmptyCell);
+        }
     }
 
-    private void OnDisable()
+    private Unit SpawnUnit(Unit unit, Vector3 position, Transform parent)
     {
-        _gameFieldCreator.OnGameFieldCreated -= OnGameFieldCreated;
+        return  Instantiate(unit, position, Quaternion.identity, parent);
     }
 
     private void SpawnRandomUnit(Vector3 position, Transform parent)
@@ -26,18 +36,5 @@ public class UnitSpawner : MonoBehaviour
         var spawnedUnit = SpawnUnit(_unitPrefab, position, parent);
 
         spawnedUnit.Setup(_unitDatas[randomUnitDataIndex]);
-    }
-
-    private Unit SpawnUnit(Unit unit, Vector3 position, Transform parent)
-    {
-        return  Instantiate(unit, position, Quaternion.identity, parent);
-    }
-    
-    private void OnGameFieldCreated(List<GameFieldCell> cells)
-    {
-        var unitsParent = new GameObject("Units");
-        
-        foreach (var cell in cells)
-            SpawnRandomUnit(cell.SpawnPointPosition, unitsParent.transform);
     }
 }

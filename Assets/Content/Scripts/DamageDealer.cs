@@ -1,4 +1,6 @@
-public class DamageDealer : IDamageDealer
+using UnityEngine;
+
+public class DamageDealer : MonoBehaviour, IDamageDealer
 {
     private float _attackPower;
 
