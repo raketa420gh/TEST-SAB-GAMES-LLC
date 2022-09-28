@@ -450,7 +450,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: dc3ddb3084c1f4a4ba456e0a208f3a83, type: 2}
   - {fileID: 11400000, guid: 4fdefdcc599a9ca409f724be1869fb18, type: 2}
   - {fileID: 11400000, guid: 538607fd152729d478ccccf270424786, type: 2}
-  _spawnUnitsCount: 25
+  _spawnUnitsCount: 24
 --- !u!4 &1221782198
 Transform:
   m_ObjectHideFlags: 0
@@ -497,8 +497,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gameFieldParent: {fileID: 2138077101}
   _cellPrefab: {fileID: 8439049883673231499, guid: 68647936a8fc3d94690c4c3bfef33568, type: 3}
-  _cellsQuantityByLength: 12
-  _cellsQuantityByWidth: 6
+  _cellsQuantityByLength: 5
+  _cellsQuantityByWidth: 5
 --- !u!4 &1481230177
 Transform:
   m_ObjectHideFlags: 0
