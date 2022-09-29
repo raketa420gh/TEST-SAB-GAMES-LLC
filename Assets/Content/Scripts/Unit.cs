@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Health))]
@@ -8,6 +9,8 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
+    public event Action<Unit> OnDeath;
+    
     private IHealth _health;
     private IMovable _movement;
     private IDamageDealer _damageDealer;
@@ -29,6 +32,16 @@ public class Unit : MonoBehaviour
         _meshRenderer = GetComponentInChildren<MeshRenderer>();
     }
 
+    private void OnEnable()
+    {
+        _health.OnOver += OnHealthOver;
+    }
+
+    private void OnDisable()
+    {
+        _health.OnOver -= OnHealthOver;
+    }
+
     public void Setup(UnitData data)
     {
         _health.Setup(data.MaxHealth);
@@ -39,19 +52,25 @@ public class Unit : MonoBehaviour
         InitializeBehaviour();
     }
 
-    public Unit FindClosestUnit()
-    {
-        return _unitsDetector.GetClosestUnit(transform);
-    }
-
-    public void SetEnemy(Unit unit) => _targetable.SetTarget(unit.Targetable);
+    public void SetAggroState() => _stateMachine.ChangeState(_aggroState);
+    
+    public void SetAttackState() => _stateMachine.ChangeState(_attackState);
 
     private void InitializeBehaviour()
     {
         _stateMachine = new StateMachine();
-        _aggroState = new UnitAggroState(this, _targetable);
-        _attackState = new UnitAttackState(this);
+        _aggroState = new UnitAggroState(this, _targetable, _unitsDetector);
+        _attackState = new UnitAttackState(this, _movement, _damageDealer);
         
         _stateMachine.ChangeState(_aggroState);
     }
+
+    private void HandleDeath()
+    {
+        OnDeath?.Invoke(this);
+        
+        Destroy(gameObject);
+    }
+
+    private void OnHealthOver() => HandleDeath();
 }

@@ -1,9 +1,9 @@
-using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public interface IUnitsDetector
 {
-    event Action<Unit> OnUnitDetected;
-    event Action<Unit> OnUnitUnobserved;
+    List<Unit> DetectedUnits { get; }
     Unit GetClosestUnit(Transform fromTransform);
+    Unit GetFreeUnit();
 }

@@ -1,24 +1,28 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 
 public class UnitAggroState : UnitState
 {
     private Unit _unit;
     private ITargetable _targetable;
+    private IUnitsDetector _unitsDetector;
     private CancellationTokenSource _cancellationTokenSource;
     
-    public UnitAggroState(Unit unit, ITargetable targetable) : base(unit)
+    public UnitAggroState(Unit unit, ITargetable targetable, IUnitsDetector unitsDetector) : base(unit)
     {
         _unit = unit;
         _targetable = targetable;
+        _unitsDetector = unitsDetector;
     }
 
     public override void Enter()
     {
         base.Enter();
         
-        FindEnemyAsync();
+        _cancellationTokenSource = new CancellationTokenSource();
+        FindEnemy(_cancellationTokenSource.Token);
     }
 
     public override void Exit()
@@ -28,27 +32,21 @@ public class UnitAggroState : UnitState
         _cancellationTokenSource.Cancel();
     }
 
-    private async Task FindEnemyAsync()
+    private async Task FindEnemy(CancellationToken cancellationToken)
     {
-        _cancellationTokenSource = new CancellationTokenSource();
-        await TryToFindEnemy(_cancellationTokenSource.Token);
-    }
+        var enemy = _unitsDetector.GetFreeUnit();
 
-    private async Task TryToFindEnemy(CancellationToken cancellationToken)
-    {
-        var potentialEnemy = _unit.FindClosestUnit();
-
-        if (!potentialEnemy && !potentialEnemy.Targetable.IsBusy)
+        if (!enemy)
         {
-            await Task.Delay(TimeSpan.FromSeconds(0.5f), cancellationToken);
+            await UniTask.Delay(TimeSpan.FromSeconds(0.5f), cancellationToken: cancellationToken);
             
-            _cancellationTokenSource.Cancel();
-
-            FindEnemyAsync();
+            _unit.SetAggroState();
         }
         else
-            SetEnemy(potentialEnemy);
+        {
+            _targetable.SetTarget(enemy.Targetable);
+            
+            _unit.SetAttackState();
+        }
     }
-
-    private void SetEnemy(Unit unit) => _unit.SetEnemy(unit);
 }

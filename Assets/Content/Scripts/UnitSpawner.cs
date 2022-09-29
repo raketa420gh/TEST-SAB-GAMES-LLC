@@ -5,6 +5,8 @@ using Random = UnityEngine.Random;
 
 public class UnitSpawner : MonoBehaviour
 {
+    public event Action<Unit> OnUnitSpawned;
+    
     [SerializeField] private Unit _unitPrefab;
     [SerializeField] private List<UnitData> _unitDatas = new List<UnitData>();
     [SerializeField] [Min(2)] private int _spawnUnitsCount;
@@ -24,11 +26,6 @@ public class UnitSpawner : MonoBehaviour
         }
     }
 
-    private Unit SpawnUnit(Unit unit, Vector3 position, Transform parent)
-    {
-        return  Instantiate(unit, position, Quaternion.identity, parent);
-    }
-
     private void SpawnRandomUnit(Vector3 position, Transform parent)
     {
         var randomUnitDataIndex = Random.Range(0, _unitDatas.Count);
@@ -36,5 +33,13 @@ public class UnitSpawner : MonoBehaviour
         var spawnedUnit = SpawnUnit(_unitPrefab, position, parent);
 
         spawnedUnit.Setup(_unitDatas[randomUnitDataIndex]);
+    }
+
+    private Unit SpawnUnit(Unit unit, Vector3 position, Transform parent)
+    {
+        var spawnedUnit = Instantiate(unit, position, Quaternion.identity, parent);
+        
+        OnUnitSpawned?.Invoke(spawnedUnit);
+        return spawnedUnit;
     }
 }
