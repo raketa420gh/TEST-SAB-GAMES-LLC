@@ -7,9 +7,8 @@ public class UnitsDetector : MonoBehaviour
 {
     private UnitSpawner _unitSpawner;
     private readonly List<Unit> _detectedUnits = new();
+    private List<Unit> _freeUnits = new();
     private Unit _closestUnit;
-
-    public List<Unit> DetectedUnits => _detectedUnits;
 
     [Inject]
     public void Construct(UnitSpawner unitSpawner) => _unitSpawner = unitSpawner;
@@ -40,18 +39,22 @@ public class UnitsDetector : MonoBehaviour
 
     public Unit GetFreeUnit()
     {
-        var allFreeUnits = _detectedUnits.Where(unit => !unit.Targetable.IsBusy).ToList();
+        var freeUnits = _detectedUnits.Where(unit => !unit.Targetable.IsBusy).ToList();
 
-        var randomIndex = Random.Range(0, allFreeUnits.Count);
+        _freeUnits = freeUnits;
 
-        return allFreeUnits[randomIndex];
+        var randomIndex = Random.Range(0, _freeUnits.Count);
+
+        return _freeUnits[randomIndex];
     }
+
+    public void AddToFreeList(Unit unit) => _freeUnits.Add(unit);
+    
+    public void RemoveFromFreeList(Unit unit) => _freeUnits.Remove(unit);
 
     private void OnUnitSpawned(Unit unit)
     {
         _detectedUnits.Add(unit);
-        unit.OnDeath += RemoveFromDetectedList;
+        unit.OnDeath += RemoveFromFreeList;
     }
-
-    private void RemoveFromDetectedList(Unit unit) => _detectedUnits.Remove(unit);
 }

@@ -7,7 +7,7 @@ public class Health : MonoBehaviour, IHealth
     public event Action<float> OnPercentChanged = delegate {  }; 
     public event Action OnOver;
     
-    private int _maxHealth = 100;
+    private int _maxHealth = 1;
     
     public int Current { get; private set; }
     public bool IsImmortal { get; private set; }

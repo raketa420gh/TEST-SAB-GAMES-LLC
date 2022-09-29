@@ -11,7 +11,6 @@ public class UnitAggroState : UnitState
     private ITargetable _targetable;
     private UnitsDetector _unitsDetector;
     private CancellationTokenSource _cancellationTokenSource;
-    private Unit _enemy;
 
     public UnitAggroState(Unit unit, IMovable movable, ITargetable targetable, UnitsDetector unitsDetector) :
         base(unit)
@@ -34,19 +33,22 @@ public class UnitAggroState : UnitState
     {
         base.Update();
 
-        if (!_enemy) 
+        if (!_unit.Enemy) 
             return;
-        
-        var distanceToEnemy = Vector3.Distance(_unit.transform.position, _enemy.transform.position);
 
-        if (distanceToEnemy < 1)
+        var enemyPosition = _unit.Enemy.transform.position;
+        var distanceToEnemy = Vector3.Distance(_unit.transform.position, enemyPosition);
+        
+        _movable.MoveTo(enemyPosition);
+
+        if (distanceToEnemy < 1f)
             _unit.SetAttackState();
     }
 
     public override void Exit()
     {
         base.Exit();
-
+        
         _cancellationTokenSource.Cancel();
     }
 
@@ -57,18 +59,15 @@ public class UnitAggroState : UnitState
         if (!enemy)
         {
             await UniTask.Delay(TimeSpan.FromSeconds(0.5f), cancellationToken: cancellationToken);
-
             _unit.SetAggroState();
-            
-            Debug.Log($"{_unit.name} not found an enemy");
         }
         else
         {
-            Debug.Log($"{_unit.name} found an enemy {enemy.name}");
-            
-            _enemy = enemy;
             _targetable.SetTarget(enemy.Targetable);
-            //_movable.MoveTo(enemy.transform.position);
+            _unitsDetector.RemoveFromFreeList(enemy);
+            _unit.SetEnemy(enemy);
+            
+            Debug.Log($"{_unit.name} found enemy = {enemy.name}");
         }
     }
 }

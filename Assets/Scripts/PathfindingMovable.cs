@@ -19,5 +19,5 @@ public class PathfindingMovable : MonoBehaviour, IMovable
 
     public void Setup(float moveSpeed) => _aiPath.maxSpeed = moveSpeed;
 
-    public void MoveTo(Vector3 position) => _aiPath.Move(position);
+    public void MoveTo(Vector3 position) => _aiPath.destination = position;
 }

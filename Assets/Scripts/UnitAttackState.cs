@@ -7,25 +7,28 @@ using UnityEngine;
 public class UnitAttackState : UnitState
 {
     private Unit _unit;
-    private IMovable _movable;
     private IDamageDealer _damageDealer;
-    private Unit _enemy;
+    private UnitsDetector _unitsDetector;
     private CancellationTokenSource _cancellationTokenSource;
 
-    public UnitAttackState(Unit unit, IMovable movable, IDamageDealer damageDealer) : base(unit)
+    public UnitAttackState(Unit unit, IDamageDealer damageDealer, UnitsDetector unitsDetector) : base(unit)
     {
-        _movable = movable;
+        _unit = unit;
         _damageDealer = damageDealer;
+        _unitsDetector = unitsDetector;
     }
 
     public override void Enter()
     {
         base.Enter();
-        
+
+        if (_unit.Enemy)
+            _unit.Enemy.OnDeath += OnEnemyDeath;
+
         _cancellationTokenSource = new CancellationTokenSource();
         Attacking(_cancellationTokenSource.Token);
         
-        Debug.Log($"{_unit.name} AggroState");
+        Debug.Log($"{_unit.name} AttackState");
     }
 
     public override void Exit()
@@ -37,10 +40,19 @@ public class UnitAttackState : UnitState
 
     private async Task Attacking(CancellationToken cancellationToken)
     {
-        _damageDealer.Attack(_enemy.Health, _damageDealer.AttackPower);
+        while (_unit.Enemy)
+        {
+            _damageDealer.Attack(_unit.Enemy.Health, _damageDealer.AttackPower);
         
-        await UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: cancellationToken);
-        
+            await UniTask.Delay(TimeSpan.FromSeconds(0.5f), cancellationToken: cancellationToken);
+        }
+    }
+    
+    private void OnEnemyDeath(Unit enemy)
+    {
+        _unit.Enemy.OnDeath -= OnEnemyDeath;
+        _unit.SetEnemy(null);
+        _unitsDetector.AddToFreeList(_unit);
         _unit.SetAggroState();
     }
 }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2eeee8e7e4694ba8850d5e2afcacdada, type: 3}
   m_Name: Unit_2
   m_EditorClassIdentifier: 
-  _maxHealth: 10
-  _moveSpeed: 2
-  _attackPower: 6
+  _maxHealth: 30
+  _attackPower: 2
+  _moveSpeed: 0.3
   _color: {r: 0.84139717, g: 1, b: 0, a: 0}
