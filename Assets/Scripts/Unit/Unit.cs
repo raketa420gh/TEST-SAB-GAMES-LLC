@@ -1,5 +1,4 @@
 using System;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using Zenject;
 
@@ -69,27 +68,25 @@ public class Unit : MonoBehaviour
 
     public void SetEnemy(Unit enemy) => Enemy = enemy;
 
+    public void ResetEnemy() => Enemy = null;
+
     private void InitializeBehaviour()
     {
         _stateMachine = new StateMachine();
         _aggroState = new UnitAggroState(this, _movable, _targetable, _unitsDetector);
-        _attackState = new UnitAttackState(this, _damageDealer, _unitsDetector);
+        _attackState = new UnitAttackState(this, _movable, _damageDealer, _unitsDetector);
 
         _stateMachine.ChangeState(_aggroState);
     }
 
     private void HandleDeath()
     {
-        OnDeath?.Invoke(this);
+        ResetEnemy();
 
+        OnDeath?.Invoke(this);
+        
         Destroy(gameObject);
     }
 
     private void OnHealthOver() => HandleDeath();
-
-    [Button]
-    private void GetDamage()
-    {
-        _health.ChangeHealth(-1);
-    }
 }

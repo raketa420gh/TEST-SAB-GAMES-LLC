@@ -41,7 +41,7 @@ public class UnitAggroState : UnitState
         
         _movable.MoveTo(enemyPosition);
 
-        if (distanceToEnemy < 1f)
+        if (distanceToEnemy < 0.5f)
             _unit.SetAttackState();
     }
 
@@ -56,7 +56,7 @@ public class UnitAggroState : UnitState
     {
         var enemy = _unitsDetector.GetFreeUnit();
 
-        if (!enemy)
+        if (!enemy || enemy == _unit)
         {
             await UniTask.Delay(TimeSpan.FromSeconds(0.5f), cancellationToken: cancellationToken);
             _unit.SetAggroState();
@@ -64,8 +64,9 @@ public class UnitAggroState : UnitState
         else
         {
             _targetable.SetTarget(enemy.Targetable);
-            _unitsDetector.RemoveFromFreeList(enemy);
+            _unitsDetector.RemoveFromDetectedList(enemy);
             _unit.SetEnemy(enemy);
+            enemy.SetEnemy(_unit);
             
             Debug.Log($"{_unit.name} found enemy = {enemy.name}");
         }

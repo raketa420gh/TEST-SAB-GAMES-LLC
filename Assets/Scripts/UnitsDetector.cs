@@ -45,16 +45,16 @@ public class UnitsDetector : MonoBehaviour
 
         var randomIndex = Random.Range(0, _freeUnits.Count);
 
-        return _freeUnits[randomIndex];
+        return freeUnits[randomIndex];
     }
-
-    public void AddToFreeList(Unit unit) => _freeUnits.Add(unit);
     
-    public void RemoveFromFreeList(Unit unit) => _freeUnits.Remove(unit);
+    public void RemoveFromDetectedList(Unit unit) => _detectedUnits.Remove(unit);
+    
+    public void AddToDetectedList(Unit unit) => _detectedUnits.Add(unit);
 
     private void OnUnitSpawned(Unit unit)
     {
         _detectedUnits.Add(unit);
-        unit.OnDeath += RemoveFromFreeList;
+        unit.OnDeath += RemoveFromDetectedList;
     }
 }

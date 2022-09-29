@@ -496,8 +496,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gameFieldParent: {fileID: 2138077101}
   _cellPrefab: {fileID: 8439049883673231499, guid: 68647936a8fc3d94690c4c3bfef33568, type: 3}
-  _cellsQuantityByLength: 5
-  _cellsQuantityByWidth: 5
+  _cellsQuantityByLength: 10
+  _cellsQuantityByWidth: 10
 --- !u!4 &1481230177
 Transform:
   m_ObjectHideFlags: 0
